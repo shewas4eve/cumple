@@ -56,8 +56,8 @@ html,body { width:100%; height:100%; overflow:hidden; color:#fff; }
     width:100%; height:100vh;
     display:flex; flex-direction:column;
     align-items:center; justify-content:center;
-    gap:1.4vh;           /* ← Reducido de 1.4vh para aprovechar espacio */
-    padding:2vh 2vw;   /* ← Reducido padding vertical */
+    gap:1.4vh;
+    padding:2vh 2vw;
 }
 
 /* ============================================================
@@ -67,18 +67,16 @@ html,body { width:100%; height:100%; overflow:hidden; color:#fff; }
 
 /* badge fecha */
 .date-badge {
-    display:inline-flex; align-items:center; gap:.6rem;
+    display:inline-flex; align-items:center; gap:.5rem;
     background:rgba(255,255,255,.07);
     backdrop-filter:blur(14px);
     border:1px solid rgba(255,255,255,.18);
     border-radius:50px;
-    padding:.32rem 1.2rem;      /* ← Aumentado de .32rem 1.2rem */
+    padding:.32rem 1.2rem;
     font-family:var(--font-body);
-    font-size:clamp(.7rem,1.35vw,.88rem);  /* ← Aumentado de .7rem a 1rem-1.3rem */
-    font-weight:500;
-    letter-spacing:2px;        /* ← Aumentado de 2px */
-    text-transform:uppercase;
-    margin-bottom:.6rem;       /* ← Reducido de .6rem */
+    font-size:clamp(.7rem,1.35vw,.88rem);
+    letter-spacing:2px; text-transform:uppercase;
+    margin-bottom:.6rem;
     animation:badge-glow 3s ease-in-out infinite;
 }
 @keyframes badge-glow{
@@ -93,10 +91,10 @@ html,body { width:100%; height:100%; overflow:hidden; color:#fff; }
 /* ── línea 1: "Feliz Cumpleaños" ── */
 .title-line-1 {
     font-family:var(--font-title);
-    font-size:clamp(2.8rem, 7vw, 85.6rem);      /* ← Aumentado significativamente */
+    font-size:clamp(2.8rem, 7vw, 5.6rem);
     font-weight:400;
-    line-height:1.1;                         /* ← Ajustado para más compacto */
-    margin:0 0 .1rem;                         /* ← Aumentado espacio entre líneas */
+    line-height:1.1;
+    margin:0 0 .1rem;
 
     /* gradient que se mueve → shimmer */
     background: linear-gradient(
@@ -118,9 +116,9 @@ html,body { width:100%; height:100%; overflow:hidden; color:#fff; }
     animation: titleShimmer 3s ease-in-out infinite;
 
     /* sombra luminosa detrás (se hace con filter, no text-shadow porque hay text-fill) */
-    filter: drop-shadow(0 0 15px rgba(255,217,61,.6))
-            drop-shadow(0 0 35px rgba(212,82,110,.35))
-            drop-shadow(0 5px 8px rgba(0,0,0,.45));
+    filter: drop-shadow(0 0 12px rgba(255,217,61,.55))
+            drop-shadow(0 0 30px rgba(212,82,110,.3))
+            drop-shadow(0 4px 6px rgba(0,0,0,.4));
 }
 
 @keyframes titleShimmer {
@@ -132,32 +130,10 @@ html,body { width:100%; height:100%; overflow:hidden; color:#fff; }
 /* ── línea 2: "Mamá Silvia" ── */
 .title-line-2 {
     font-family:var(--font-title);
-    font-size:clamp(3.2rem, 8vw, 6.4rem);      /* ← Aumentado significativamente */
+    font-size:clamp(3.2rem, 8vw, 6.4rem);
     font-weight:400;
-    line-height:1.1;                         /* ← Ajustado */
+    line-height:1.1;
     margin:0;
-
-    background: linear-gradient(
-        100deg,
-        #ff6b9d 0%,
-        #ffd93d 20%,
-        #fff    34%,
-        #fd79a8 50%,
-        #fff    64%,
-        #ffd93d 80%,
-        #ff6b9d 100%
-    );
-    background-size: 220% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-
-    animation: titleShimmer 3.6s ease-in-out infinite;
-
-    filter: drop-shadow(0 0 18px rgba(255,107,157,.55))
-            drop-shadow(0 0 40px rgba(255,217,61,.3))
-            drop-shadow(0 5px 10px rgba(0,0,0,.5));
-}
 
     background: linear-gradient(
         100deg,
