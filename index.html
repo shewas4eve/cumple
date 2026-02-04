@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Cumpleaños Mamá Silvia ❤️</title>
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- FONDOS -->
+<div class="bg-layer active" id="bg0"></div>
+<div class="bg-layer" id="bg1"></div> 22624139 
+<div class="bg-layer" id="bg2"></div>
+<div class="bg-layer" id="bg3"></div>
+
+<!-- VIGNETA -->
+<div class="vignette"></div>
+
+<!-- PARTÍCULAS -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- ===== PANTALLA ===== -->
+<div class="screen">
+
+    <!-- HEADER — título escrito directo, sin JS -->
+    <header class="header">
+        <div class="date-badge">
+            <span>🌸</span> 1 de Febrero · 2026 <span>🌸</span>
+        </div>
+
+        <h1 class="title-line-1">Feliz Cumpleaños</h1>
+        <h2 class="title-line-2">Mamá Silvia</h2>
+    </header>
+
+    <!-- MENSAJES -->
+    <section class="message-zone">
+        <div class="card-glow"></div>
+        <div class="message-card" id="messageCard"></div>
+    </section>
+
+    <!-- CÓDIGO QR Y MENSAJES DE INVITADOS -->
+    <section class="guest-messages-section">
+        <!-- QR Code -->
+        <div class="qr-container">
+            <h3 class="qr-title">Deja un mensaje</h3>
+            <div class="qr-code" id="qrCode">
+                <!-- El QR se genera aquí -->
+            </div>
+            <p class="qr-subtitle">Escanea para dejar tus felicitaciones</p>
+        </div>
+
+        <!-- Mensajes de invitados -->
+        <div class="guest-messages-display" id="guestMessages">
+            <h3 class="guest-messages-title">💝 Mensajes de los invitados</h3>
+            <div class="messages-scroll" id="messagesContainer">
+                <div class="loading-messages">Cargando mensajes...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PASTEL -->
+    <footer class="footer">
+        <div class="cake-wrap">
+            <div class="candle-row" id="candleRow"></div>
+            <div class="cake">
+                <div class="drip-row">
+                    <div class="drip" style="left:5%;  height:17px;"></div>
+                    <div class="drip" style="left:17%; height:25px; animation-delay:.3s"></div>
+                    <div class="drip" style="left:30%; height:13px; animation-delay:.65s"></div>
+                    <div class="drip" style="left:44%; height:27px; animation-delay:.12s"></div>
+                    <div class="drip" style="left:58%; height:15px; animation-delay:.5s"></div>
+                    <div class="drip" style="left:72%; height:21px; animation-delay:.85s"></div>
+                    <div class="drip" style="left:87%; height:11px; animation-delay:.42s"></div>
+                </div>
+                <div class="cake-layer layer-1"><div class="deco-row" id="deco1"></div></div>
+                <div class="cake-layer layer-2"><div class="deco-row" id="deco2"></div></div>
+                <div class="cake-layer layer-3"><div class="deco-row" id="deco3"></div></div>
+                <div class="plate"></div>
+            </div>
+        </div>
+        <p class="footer-love">Con todo nuestro amor ❤️</p>
+    </footer>
+</div>
+
+<!-- ============================================================
+     JS
+     ============================================================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ─── CONFIGURACIÓN ─── */
+// ⚠️ IMPORTANTE: Reemplaza estas URLs después de configurar Google Apps Script
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxP1zSGvYhpjAIISoIdslnXAvwYr4WrcQGuAwqOyAC6c22VOdN63YzaxoOMkdiVbCm/exec';  // URL del Google Apps Script (termina en /exec)
+const FORM_URL = 'https://shewas4eve.github.io/cumple/formulario.html';  // URL del formulario
+
+/* ─── colores ─── */
+const COLORS=[
+    '#ff4757','#ff6b81','#ffa502','#eccc68',
+    '#7bed9f','#70a1ff','#a29bfe','#fd79a8',
+    '#fdcb6e','#e17055','#55efc4','#74b9ff'
+];
+
+/* ─── mensajes (10 seg, sin dots) ─── */
+const MSGS=[
+    {i:"❤️", t:"Hoy celebramos el día de una persona <strong>extraordinaria</strong>. No hay palabras suficientes para expresar todo lo que significas para nosotros, mamá."},
+    {i:"🌹", t:"Desde que nacimos nos has dado lo más valioso: <strong>amor incondicional</strong>. Gracias por estar siempre ahí con una sonrisa y un abrazo."},
+    {i:"✨", t:"Eres la luz de nuestra familia. Tu cariño nos guía todos los días y nos hace sentir que estamos en el <strong>mejor lugar del mundo</strong>."},
+    {i:"🌸", t:"Por cada desvelo, por cada sacrificio en silencio… <strong>te lo agradecemos con todo el corazón</strong>, mamá Silvia."},
+    {i:"🌟", t:"Que este nuevo año te traiga todo lo que mereces: <strong>felicidad, salud y mucho amor</strong> de todos los que te queremos."},
+    {i:"💐", t:"Tú nos enseñaste a amarnos, a reírnos y a valorar lo que importa. Eres nuestra <strong>primera profesora de vida</strong>."},
+    {i:"🦋", t:"En cada cosa que hacemos hay un poco de ti. Tu sabiduría y tu ternura viven <strong>dentro de cada uno de nosotros</strong>."},
+    {i:"🎀", t:"Si pudiera regalarte algo esta fecha, te regalaría <strong>mil años más de alegría</strong> y de momentos bonitos junto a nosotros."},
+    {i:"💝", t:"Mamá, tú eres el abrazo más cálido, el hogar más seguro. <strong>Gracias por existir</strong> y por hacernos tan felices."},
+    {i:"🎂", t:"¡Que este cumpleaños sea el más especial de todos! Hoy la celebrada eres tú, la <strong>mamá más increíble del planeta</strong>."}
+];
+
+const card = document.getElementById('messageCard');
+MSGS.forEach((m,i)=>{
+    const d = document.createElement('div');
+    d.className = 'msg'+(i===0?' active':'');
+    d.innerHTML = `<span class="mi">${m.i}</span><p>${m.t}</p>`;
+    card.appendChild(d);
+});
+
+let cur=0;
+const allMsgs = card.querySelectorAll('.msg');
+setInterval(()=>{
+    allMsgs[cur].classList.remove('active');
+    cur=(cur+1)%allMsgs.length;
+    allMsgs[cur].classList.add('active');
+}, 10000);
+
+/* ─── velas ─── */
+const cRow = document.getElementById('candleRow');
+['#ff6b9d','#a29bfe','#fdcb6e','#55efc4','#ff4757'].forEach((c,i)=>{
+    cRow.innerHTML+=`<div class="candle" style="--wc:${c};animation-delay:${i*.18}s">
+        <div class="flame"><div class="fi"></div></div>
+        <div class="wax"></div>
+    </div>`;
+});
+
+/* ─── decos pastel ─── */
+function fillDeco(id,n){
+    const el=document.getElementById(id);
+    for(let i=0;i<n;i++){
+        const d=document.createElement('div');
+        d.className='dd';
+        d.style.background=COLORS[Math.floor(Math.random()*COLORS.length)];
+        d.style.animationDelay=(Math.random()*1.4)+'s';
+        d.style.width=d.style.height=(Math.random()*5+4)+'px';
+        el.appendChild(d);
+    }
+}
+fillDeco('deco1',6); fillDeco('deco2',8); fillDeco('deco3',11);
+
+/* ─── fondos rotantes cada 8s ─── */
+const bgs=document.querySelectorAll('.bg-layer');
+let cb=0;
+setInterval(()=>{
+    bgs[cb].classList.remove('active');
+    cb=(cb+1)%bgs.length;
+    bgs[cb].classList.add('active');
+}, 8000);
+
+/* ─── canvas partículas ─── */
+const canvas=document.getElementById('particleCanvas');
+const ctx=canvas.getContext('2d');
+function rc(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+rc(); addEventListener('resize',rc);
+
+class P{
+    constructor(){ this.reset(true); }
+    reset(sc){
+        this.x=sc?Math.random()*canvas.width:Math.random()*canvas.width;
+        this.y=sc?Math.random()*canvas.height:-14;
+        this.sz=Math.random()*2.8+0.7;
+        this.sx=(Math.random()-.5)*.55;
+        this.sy=Math.random()*.42+.16;
+        this.op=Math.random()*.5+.22;
+        const rr=Math.random();
+        this.type=rr<.55?'star':rr<.85?'petal':'conf';
+        this.hue=Math.random()*50+330;
+        this.w=Math.random()*Math.PI*2;
+        this.ws=Math.random()*.024+.007;
+        if(this.type==='conf'){
+            this.sz=Math.random()*4+2;
+            this.hue=Math.random()*360;
+            this.sy=Math.random()*.55+.28;
+            this.rot=Math.random()*Math.PI*2;
+            this.rs=(Math.random()-.5)*.14;
+        }
+    }
+    update(){
+        this.w+=this.ws;
+        this.x+=this.sx+Math.sin(this.w)*.38;
+        this.y+=this.sy;
+        if(this.type==='conf') this.rot+=this.rs;
+        if(this.y>canvas.height+16) this.reset(false);
+        if(this.x<-22) this.x=canvas.width+22;
+        if(this.x>canvas.width+22) this.x=-22;
+    }
+    draw(){
+        ctx.save();
+        ctx.globalAlpha=this.op;
+        if(this.type==='star'){
+            ctx.fillStyle='#fff';
+            ctx.shadowColor='rgba(255,255,255,.85)';
+            ctx.shadowBlur=8;
+            ctx.beginPath();
+            ctx.arc(this.x,this.y,this.sz,0,Math.PI*2);
+            ctx.fill();
+        } else if(this.type==='petal'){
+            ctx.fillStyle=`hsl(${this.hue},74%,70%)`;
+            ctx.shadowColor='rgba(212,82,110,.5)';
+            ctx.shadowBlur=6;
+            ctx.beginPath();
+            ctx.ellipse(this.x,this.y,this.sz*2.1,this.sz*.85,this.w,0,Math.PI*2);
+            ctx.fill();
+        } else {
+            ctx.fillStyle=`hsl(${this.hue},84%,65%)`;
+            ctx.translate(this.x,this.y);
+            ctx.rotate(this.rot);
+            ctx.fillRect(-this.sz/2,-this.sz*.28,this.sz,this.sz*.56);
+        }
+        ctx.restore();
+    }
+}
+
+const parts=[];
+for(let i=0;i<160;i++) parts.push(new P());
+(function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach(p=>{p.update();p.draw();});
+    requestAnimationFrame(loop);
+})();
+
+/* ─── GENERAR CÓDIGO QR ─── */
+function generateQR() {
+    const qrContainer = document.getElementById('qrCode');
+    if (qrContainer && typeof QRCode !== 'undefined') {
+        new QRCode(qrContainer, {
+            text: FORM_URL,
+            width: 180,
+            height: 180,
+            colorDark: '#d4526e',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+}
+
+/* ─── CARGAR MENSAJES DE INVITADOS ─── */
+async function loadGuestMessages() {
+    const container = document.getElementById('messagesContainer');
+    
+    try {
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
+        
+        if (data.success && data.messages && data.messages.length > 0) {
+            // Mostrar mensajes
+            container.innerHTML = data.messages.map(msg => `
+                <div class="guest-message">
+                    <div class="guest-message-header">
+                        <span class="guest-name">💌 ${escapeHtml(msg.nombre)}</span>
+                        <span class="guest-time">${formatTime(msg.timestamp)}</span>
+                    </div>
+                    <div class="guest-message-text">${escapeHtml(msg.mensaje)}</div>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="no-messages">Aún no hay mensajes. ¡Sé el primero en dejar uno!</div>';
+        }
+    } catch (error) {
+        console.error('Error cargando mensajes:', error);
+        container.innerHTML = '<div class="no-messages">Error al cargar mensajes. Refresca la página.</div>';
+    }
+}
+
+/* ─── UTILIDADES ─── */
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatTime(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = now - date;
+    
+    // Si fue hace menos de 1 minuto
+    if (diff < 60000) return 'Hace un momento';
+    
+    // Si fue hace menos de 1 hora
+    if (diff < 3600000) {
+        const mins = Math.floor(diff / 60000);
+        return `Hace ${mins} min${mins > 1 ? 's' : ''}`;
+    }
+    
+    // Si fue hoy
+    if (date.toDateString() === now.toDateString()) {
+        return date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    }
+    
+    // Fecha completa
+    return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+}
+
+/* ─── INICIALIZACIÓN ─── */
+// Generar QR cuando cargue la página
+window.addEventListener('load', () => {
+    generateQR();
+    loadGuestMessages();
+    
+    // Actualizar mensajes cada 30 segundos
+    setInterval(loadGuestMessages, 30000);
+});
+</script>
+</body>
+</html>
